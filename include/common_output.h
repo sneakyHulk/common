@@ -1,11 +1,10 @@
 #pragma once
 
 #include <common.h>
+#include <common_ostream.h>
 
-#include <array>
 #include <iostream>
 #include <sstream>
-#include <vector>
 
 namespace common {
 	template <typename T>
@@ -157,5 +156,5 @@ namespace common {
 		std::cout << e << std::endl;
 	}
 
-	[[maybe_unused]] void arrayprint(printable auto&&... args) { return abdprintln<"[", ", ", "]">(std::forward<decltype(args)>(args)...); }
+	[[maybe_unused]] void as_arrayprint(printable auto&&... args) { return abdprintln<"[", ", ", "]">(std::forward<decltype(args)>(args)...); }
 }  // namespace common

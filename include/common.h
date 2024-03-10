@@ -4,9 +4,15 @@
 #include <array>
 #include <queue>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 namespace common {
+	template <class T>
+	[[maybe_unused]] inline constexpr typename std::make_unsigned<T>::type as_unsigned(T a) {
+		return static_cast<typename std::make_unsigned<T>::type>(a);
+	}
+
 	// use a string literal "<string>" as template argument parameter
 	template <std::size_t N>
 	struct [[maybe_unused]] StringLiteral {

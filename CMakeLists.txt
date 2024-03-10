@@ -19,6 +19,9 @@ target_link_libraries(${PROJECT_NAME}_literals_test PRIVATE ${PROJECT_NAME})
 add_executable(${PROJECT_NAME}_output_test test/${PROJECT_NAME}_output_test.cpp)
 target_link_libraries(${PROJECT_NAME}_output_test PRIVATE ${PROJECT_NAME})
 
+add_executable(${PROJECT_NAME}_math_test test/${PROJECT_NAME}_math_test.cpp)
+target_link_libraries(${PROJECT_NAME}_math_test PRIVATE ${PROJECT_NAME})
+
 enable_testing()
 
 add_test(
@@ -32,4 +35,8 @@ add_test(
 add_test(
         NAME ${PROJECT_NAME}_output_test
         COMMAND $<TARGET_FILE:${PROJECT_NAME}_output_test>
+)
+add_test(
+        NAME ${PROJECT_NAME}_math_test
+        COMMAND $<TARGET_FILE:${PROJECT_NAME}_math_test>
 )
