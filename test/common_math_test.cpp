@@ -1,5 +1,6 @@
 #include <common.h>
 #include <common_math.h>
+#include <common_output.h>
 
 auto main() -> int {
 	if (common::is_prime(common::as_unsigned(11)) != true && common::is_prime(11U) != true) return 1;
@@ -32,4 +33,7 @@ auto main() -> int {
 
 	if (common::integer_sqrt32(25) != 5) return 1;
 	if (common::integer_sqrt32(24) != 4) return 1;
+
+	if (common::nCr(7U, 4U) != 35) return 1;
+	if (common::nCr(common::as_unsigned(7), common::as_unsigned(3)) != 35) return 1;
 }

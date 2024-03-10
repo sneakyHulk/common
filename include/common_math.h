@@ -22,6 +22,7 @@ namespace common {
 		return res;
 	}
 
+	// modulo with only positive outcome
 	[[maybe_unused]] constexpr auto euclidean_mod(std::signed_integral auto a, std::signed_integral auto b) {
 		std::signed_integral auto r = a % b;
 		return r >= 0 ? r : r + std::abs(b);
@@ -36,6 +37,7 @@ namespace common {
 	}
 	[[maybe_unused]] constexpr auto euclidean_mod(std::unsigned_integral auto a, std::unsigned_integral auto b) { return a % b; }
 
+	// see python modulo:
 	[[maybe_unused]] constexpr auto floored_mod(std::signed_integral auto a, std::signed_integral auto b) { return ((a % b) + b) % b; }
 	[[maybe_unused]] constexpr auto floored_mod(std::unsigned_integral auto a, std::signed_integral auto b) { return ((a % b) + b) % b; }
 	[[maybe_unused]] constexpr auto floored_mod(std::signed_integral auto a, std::unsigned_integral auto b) { return ((a % b) + b) % b; }
@@ -55,4 +57,18 @@ namespace common {
 		}
 		return res;
 	}
-}
+
+	// classic n choose r computation, will result in 1 when fed with r values greater than n.
+	// when extending to signed negative values for n or r will also produce 1.
+	[[maybe_unused]] constexpr auto nCr(std::unsigned_integral auto n, std::unsigned_integral auto r) {
+		if (r > n - r) r = n - r;  // because C(n, r) == C(n, n - r)
+		decltype(n) ans = 1;
+
+		for (auto i = 1; i <= r; i++) {
+			ans *= n - r + i;
+			ans /= i;
+		}
+
+		return ans;
+	}
+}  // namespace common
