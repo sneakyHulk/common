@@ -8,10 +8,11 @@
 #include <vector>
 
 namespace common {
-	template <class T>
-	[[maybe_unused]] inline constexpr typename std::make_unsigned<T>::type as_unsigned(T a) {
-		return static_cast<typename std::make_unsigned<T>::type>(a);
-	}
+	// static_cast any signed type to their unsigned equivalent
+	[[maybe_unused]] inline constexpr auto as_unsigned(std::integral auto a) { return static_cast<typename std::make_unsigned<decltype(a)>::type>(a); }
+
+	// static_cast any unsigned type to their signed equivalent
+	[[maybe_unused]] inline constexpr auto as_signed(std::integral auto a) { return static_cast<typename std::make_signed<decltype(a)>::type>(a); }
 
 	// use a string literal "<string>" as template argument parameter
 	template <std::size_t N>
