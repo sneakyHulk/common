@@ -2,9 +2,9 @@
 
 #include <common.h>
 
+#include <array>
 #include <iostream>
 #include <sstream>
-#include <array>
 #include <vector>
 
 namespace common {
@@ -39,6 +39,32 @@ namespace common {
 		return ss.str();
 	}
 
+	template <StringLiteral start, StringLiteral delimiter, StringLiteral end>
+	[[maybe_unused]] std::string abdstringprint(printable auto&&... args) {
+		constexpr auto d = delimiter.value;
+		constexpr auto s = start.value;
+		constexpr auto e = end.value;
+		std::ostringstream ss;
+
+		ss << s;
+
+		if constexpr (sizeof...(args)) {
+			auto println_recursive = [&d, &ss](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+				ss << first;
+				if constexpr (sizeof...(args)) {
+					ss << d;
+					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+				}
+			};
+
+			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
+		}
+
+		ss << e;
+
+		return ss.str();
+	}
+
 	[[maybe_unused]] void print(printable auto&&... args) {
 		std::ostringstream ss;
 		(std::cout << ... << args) << std::flush;
@@ -59,6 +85,29 @@ namespace common {
 
 			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
 		}
+	}
+
+	template <StringLiteral start, StringLiteral delimiter, StringLiteral end>
+	[[maybe_unused]] void abdprint(printable auto&&... args) {
+		constexpr auto d = delimiter.value;
+		constexpr auto s = start.value;
+		constexpr auto e = end.value;
+
+		std::cout << s;
+
+		if constexpr (sizeof...(args)) {
+			auto println_recursive = [&d](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+				std::cout << first;
+				if constexpr (sizeof...(args)) {
+					std::cout << d;
+					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+				}
+			};
+
+			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
+		}
+
+		std::cout << e;
 	}
 
 	[[maybe_unused]] void println(printable auto&&... args) {
@@ -84,4 +133,29 @@ namespace common {
 
 		std::cout << std::endl;
 	}
+
+	template <StringLiteral start, StringLiteral delimiter, StringLiteral end>
+	[[maybe_unused]] void abdprintln(printable auto&&... args) {
+		constexpr auto d = delimiter.value;
+		constexpr auto s = start.value;
+		constexpr auto e = end.value;
+
+		std::cout << s;
+
+		if constexpr (sizeof...(args)) {
+			auto println_recursive = [&d](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+				std::cout << first;
+				if constexpr (sizeof...(args)) {
+					std::cout << d;
+					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+				}
+			};
+
+			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
+		}
+
+		std::cout << e << std::endl;
+	}
+
+	[[maybe_unused]] void arrayprint(printable auto&&... args) { return abdprintln<"[", ", ", "]">(std::forward<decltype(args)>(args)...); }
 }  // namespace common
