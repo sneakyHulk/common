@@ -9,6 +9,12 @@
 #include <vector>
 
 namespace common {
+	// concept to check whether range-based for loop can be used.
+	template <typename T>
+	concept iterable = requires(T const &obj) {
+		{ obj.begin(), obj.end(), ++(obj.begin()) };
+	};
+
 	// static_cast any signed type to their unsigned equivalent
 	[[maybe_unused]] inline constexpr auto as_unsigned(std::integral auto a) { return static_cast<typename std::make_unsigned<decltype(a)>::type>(a); }
 
