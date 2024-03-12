@@ -70,7 +70,6 @@ target_include_directories(${PROJECT_NAME}
         INTERFACE
         ${PROJECT_SOURCE_DIR}/include
 )
-
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 
 add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
