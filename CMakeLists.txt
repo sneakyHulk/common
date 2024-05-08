@@ -36,6 +36,15 @@ CPMAddPackage(
 )
 
 
+CPMAddPackage(
+        NAME Boost
+        VERSION 1.84.0
+        URL https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.xz
+        URL_HASH SHA256=2e64e5d79a738d0fa6fb546c6e5c2bd28f88d268a2a080546f74e5ff98f29d0e
+        OPTIONS "BOOST_ENABLE_CMAKE ON" "BOOST_INCLUDE_LIBRARIES container\\\;asio" # Note the escapes!
+)
+
+
 # matplotlib-cpp
 #find_package(Python3 COMPONENTS Interpreter Development.Embed)
 #if (${Python3_FOUND})
@@ -86,7 +95,7 @@ target_link_libraries(${PROJECT_NAME}_math_test PRIVATE ${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}_graph_test test/${PROJECT_NAME}_graph_test.cpp)
 target_include_directories(${PROJECT_NAME}_graph_test PRIVATE)
-target_link_libraries(${PROJECT_NAME}_graph_test PRIVATE ${PROJECT_NAME} matplotlibcpp17::matplotlibcpp17)
+target_link_libraries(${PROJECT_NAME}_graph_test PRIVATE ${PROJECT_NAME} matplotlibcpp17::matplotlibcpp17 Boost::asio Boost::container)
 
 enable_testing()
 

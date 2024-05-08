@@ -3,7 +3,6 @@
 #include <common.h>
 #include <common_ostream.h>
 
-#include <format>
 #include <iostream>
 #include <sstream>
 
@@ -158,10 +157,16 @@ namespace common {
 	}
 
 	[[maybe_unused]] void as_arrayprint(printable auto&&... args) { return abdprintln<"[", ", ", "]">(std::forward<decltype(args)>(args)...); }
+}  // namespace common
 
+#ifdef __cpp_lib_format
+#include <format>
+namespace common {
 	constexpr std::string to_bin(std::integral auto num) {
 		std::stringstream ss;
 		ss << std::format("{:b}", num);
 		return ss.str();
 	}
+
 }  // namespace common
+#endif
