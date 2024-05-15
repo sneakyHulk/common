@@ -10,16 +10,32 @@
 
 namespace common {
 	// concept to check whether range-based for loop can be used.
+#ifdef __cpp_concepts
 	template <typename T>
 	concept iterable = requires(T const &obj) {
 		{ obj.begin(), obj.end(), ++(obj.begin()) };
 	};
+#endif
 
 	// static_cast any signed type to their unsigned equivalent
+#ifdef __cpp_concepts
 	[[maybe_unused]] inline constexpr auto as_unsigned(std::integral auto a) { return static_cast<typename std::make_unsigned<decltype(a)>::type>(a); }
+#else
+	template <typename T>
+	[[maybe_unused]] inline constexpr auto as_unsigned(T a) {
+		return static_cast<typename std::make_unsigned<decltype(a)>::type>(a);
+	}
+#endif
 
 	// static_cast any unsigned type to their signed equivalent
+#ifdef __cpp_concepts
 	[[maybe_unused]] inline constexpr auto as_signed(std::integral auto a) { return static_cast<typename std::make_signed<decltype(a)>::type>(a); }
+#else
+	template <typename T>
+	[[maybe_unused]] inline constexpr auto as_signed(T a) {
+		return static_cast<typename std::make_signed<decltype(a)>::type>(a);
+	}
+#endif
 
 	// use a string literal "<string>" as template argument parameter
 	template <std::size_t N>
@@ -49,7 +65,9 @@ namespace common {
 	};
 
 	// use this to store key-value pairs of any kind and to access only the highest key.
+#if __cplusplus >= 202002L
 	template <typename Key, typename Value>
 	class [[maybe_unused]] pair_priority_queue
 	    : public std::priority_queue<std::pair<Key, Value>, std::vector<std::pair<Key, Value>>, decltype([](std::pair<Key, Value> const &a, std::pair<Key, Value> const &b) { return a.first < b.first; })> {};
+#endif
 }  // namespace common

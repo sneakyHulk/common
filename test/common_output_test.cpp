@@ -2,8 +2,10 @@
 
 auto main() -> int {
 	if (common::println(1, "2", '3'); common::stringprint(1, "2", '3') != "123") return 1;
+#ifdef __cpp_concepts
 	if (common::dprintln<", ">(1, "2", '3'); common::dstringprint<", ">(1, "2", '3') != "1, 2, 3") return 1;
 	if (common::as_arrayprint(1, "2", '3'); common::abdstringprint<"[", ", ", "]">(1, "2", '3') != "[1, 2, 3]") return 1;
+#endif
 
 	{
 		std::array a{1, 2, 3};

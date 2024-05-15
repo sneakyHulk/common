@@ -79,7 +79,7 @@ target_include_directories(${PROJECT_NAME}
         INTERFACE
         ${PROJECT_SOURCE_DIR}/include
 )
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 
 add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
 target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME})
