@@ -41,7 +41,7 @@ template <typename T>
 	char space[]{0, 0, 0};
 	for (auto const& e : set) {
 #else
-	for (char space[]{0, 0, 0}; auto const& e : arr) {
+	for (char space[]{0, 0, 0}; auto const& e : set) {
 #endif
 		stream << space << e, *space = ',', *(space + 1) = ' ';
 	}
