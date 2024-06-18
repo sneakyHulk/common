@@ -55,4 +55,11 @@ auto main() -> int {
 		common::println(a);
 		common::println(std::move(a));
 	}
+
+	{
+		std::set<double> a{1.5, 2.9, 6.3};
+		common::println(std::set<double>{1.5, 2.9, 6.3});
+		common::println(a);
+		common::println(std::move(a));
+	}
 }

@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <ostream>
+#include <set>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
@@ -29,6 +30,29 @@ template <typename T, std::size_t SIZE>
 template <typename T, std::size_t SIZE>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::array<T, SIZE> const&& arr) {
 	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(arr)>(arr));
+}
+
+// make std::set printable
+template <typename T>
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::set<T> const& set) {
+	stream << '|';
+
+#if __cplusplus < 202002L
+	char space[]{0, 0, 0};
+	for (auto const& e : set) {
+#else
+	for (char space[]{0, 0, 0}; auto const& e : arr) {
+#endif
+		stream << space << e, *space = ',', *(space + 1) = ' ';
+	}
+
+	stream << '|';
+
+	return stream;
+}
+template <typename T>
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::set<T> const&& set) {
+	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(set)>(set));
 }
 
 // make std::tuple printable
