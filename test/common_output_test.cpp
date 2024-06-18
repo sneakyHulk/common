@@ -41,4 +41,18 @@ auto main() -> int {
 		common::println(a);
 		common::println(std::move(a));
 	}
+
+	{
+		std::tuple<double, double, int> a{1., 2.5, 3};
+		common::println(std::tuple<double, double, int>{1., 2.5, 3});
+		common::println(a);
+		common::println(std::move(a));
+	}
+
+	{
+		std::pair<double, int> a{1.5, 2};
+		common::println(std::pair<double, int>{1.5, 2});
+		common::println(a);
+		common::println(std::move(a));
+	}
 }

@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <ostream>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -28,6 +29,39 @@ template <typename T, std::size_t SIZE>
 template <typename T, std::size_t SIZE>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::array<T, SIZE> const&& arr) {
 	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(arr)>(arr));
+}
+
+// make std::tuple printable
+template <typename... T>
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::tuple<T...> const& tup) {
+	static auto print_tuple = []<std::size_t... I>(std::ostream& stream, std::tuple<T...> const& tup, std::index_sequence<I...>) {
+		char space[]{0, 0, 0};
+		(... << (stream << space << std::get<I>(tup), *space = ',', *(space + 1) = ' '));
+	};
+
+	stream << '(';
+	print_tuple(stream, tup, std::make_index_sequence<sizeof...(T)>());
+	stream << ')';
+
+	return stream;
+}
+template <typename... T>
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::tuple<T...> const&& tup) {
+	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(tup)>(tup));
+}
+
+// make std::pair printable
+template <typename T1, typename T2>
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::pair<T1, T2> const& pair) {
+	stream << '(';
+	stream << pair.first << ", " << pair.second;
+	stream << ')';
+
+	return stream;
+}
+template <typename T1, typename T2>
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::pair<T1, T2> const&& pair) {
+	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(pair)>(pair));
 }
 
 // make std::vector printable
