@@ -79,7 +79,7 @@ target_include_directories(${PROJECT_NAME}
         INTERFACE
         ${PROJECT_SOURCE_DIR}/include
 )
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
 target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME})
@@ -92,6 +92,9 @@ target_link_libraries(${PROJECT_NAME}_output_test PRIVATE ${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}_math_test test/${PROJECT_NAME}_math_test.cpp)
 target_link_libraries(${PROJECT_NAME}_math_test PRIVATE ${PROJECT_NAME})
+
+add_executable(${PROJECT_NAME}_exception_test test/${PROJECT_NAME}_exception_test.cpp)
+target_link_libraries(${PROJECT_NAME}_exception_test PRIVATE ${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}_graph_test test/${PROJECT_NAME}_graph_test.cpp)
 target_include_directories(${PROJECT_NAME}_graph_test PRIVATE)
@@ -118,4 +121,8 @@ add_test(
 add_test(
         NAME ${PROJECT_NAME}_graph_test
         COMMAND $<TARGET_FILE:${PROJECT_NAME}_graph_test>
+)
+add_test(
+        NAME ${PROJECT_NAME}_exception_test
+        COMMAND $<TARGET_FILE:${PROJECT_NAME}_exception_test>
 )
