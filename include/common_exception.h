@@ -1,8 +1,7 @@
 #pragma once
 
 #include <stdexcept>
-
-#include "common_output.h"
+#include <common_ostream.h>
 
 namespace common {
 	class Exception : public std::exception {
