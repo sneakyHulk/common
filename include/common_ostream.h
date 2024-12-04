@@ -179,3 +179,10 @@ template <typename Key, typename T, typename Hash, typename KeyEqual, typename A
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::unordered_map<Key, T, Hash, KeyEqual, Alloc> const&& vec) {
 	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(vec)>(vec));
 }
+
+#ifdef __cpp_concepts
+template <typename T>
+concept printable = requires(std::ostream& os, const T& msg) {
+	{ os << msg };
+};
+#endif
