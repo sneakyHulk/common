@@ -3,7 +3,9 @@
 #include <common.h>
 #include <common_ostream.h>
 
+#include <filesystem>
 #include <iostream>
+#include <source_location>
 #include <sstream>
 
 namespace common {
@@ -81,7 +83,6 @@ namespace common {
 	template <typename... T>
 	[[maybe_unused]] void print(T&&... args) {
 #endif
-		std::ostringstream ss;
 		(std::cout << ... << args) << std::flush;
 	}
 
@@ -129,15 +130,42 @@ namespace common {
 	}
 #endif
 
+	// #ifdef __cpp_concepts
+	//	[[maybe_unused]] void println(printable auto&&... args) {
+	// #else
+	//	template <typename... T>
+	//	[[maybe_unused]] void println(T&&... args) {
+	// #endif
+	//		(std::cout << ... << args) << std::endl;
+	//	}
+
+	enum class LOGLEVEL {
+		DEBUG,
+		INFO,
+		WARNING,
+		ERROR,
+		CRITICAL,
+	};
+
 #ifdef __cpp_concepts
-	[[maybe_unused]] void println(printable auto&&... args) {
+	template <printable... Args>
+	struct println {
+		explicit println(Args&&... args, std::source_location const location = std::source_location::current()) {
+			std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ";
+			((std::cout << std::forward<Args>(args) << " "), ...);
+			std::cout << std::endl;
+		}
+	};
+
+	template <printable... Args>
+	println(Args&&... args) -> println<Args...>;
+
 #else
 	template <typename... T>
 	[[maybe_unused]] void println(T&&... args) {
-#endif
-		std::ostringstream ss;
-		(std::cout << ... << args) << std::endl;
+		(std::cout << ... << std::forward<Args>(args)) << std::endl;
 	}
+#endif
 
 #ifdef __cpp_concepts
 	template <StringLiteral delimiter = " ">
