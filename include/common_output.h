@@ -11,7 +11,6 @@
 
 namespace common {
 
-
 #ifdef __cpp_concepts
 	[[maybe_unused]] std::string stringprint(printable auto&&... args) {
 #else
@@ -155,7 +154,7 @@ namespace common {
 	template <printable... Args>
 	struct println_loc {
 		explicit println_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << std::endl;
+			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << std::endl;
 		}
 	};
 
@@ -165,7 +164,7 @@ namespace common {
 	template <printable... Args>
 	struct println_warn_loc {
 		explicit println_warn_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << YEL << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << RESET << std::endl;
+			((std::cout << YEL << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
 		}
 	};
 
@@ -177,20 +176,20 @@ namespace common {
 	template <printable... Args>
 	struct println_error_loc {
 		explicit println_error_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << RESET << std::endl;
+			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
 		}
 	};
 
 	template <printable... Args>
 	println_error_loc(Args&&... args) -> println_error_loc<Args...>;
 
-	void println_error(printable auto&&... args) { ((std::cout << RED) << ... << args) << RESET << std::endl; }
+	void println_error(printable auto&&... args) { ((std::cout << RED) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl; }
 
 	template <printable... Args>
 	struct println_critical_loc {
 		explicit println_critical_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << RESET << std::endl;
-			throw Exception(std::forward<decltype(args)>(args)...);
+			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
+			throw Exception(std::forward<Args>(args)...);
 		}
 	};
 
