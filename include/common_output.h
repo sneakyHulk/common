@@ -74,6 +74,16 @@ namespace common {
 
 #ifdef __cpp_concepts
 	template <printable... Args>
+		struct print_debug_loc {
+		explicit print_debug_loc(Args&&... args, std::source_location const location = std::source_location::current()) { ((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << std::flush; }
+	};
+
+	template <printable... Args>
+	print_debug_loc(Args&&... args) -> print_debug_loc<Args...>;
+
+	void print_debug(printable auto&&... args) { (std::cout << ... << args) << std::flush; }
+
+	template <printable... Args>
 	struct print_loc {
 		explicit print_loc(Args&&... args, std::source_location const location = std::source_location::current()) { ((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << std::flush; }
 	};
@@ -160,6 +170,19 @@ namespace common {
 
 	template <printable... Args>
 	println_loc(Args&&... args) -> println_loc<Args...>;
+
+	template <printable... Args>
+	struct println_debug_loc {
+		explicit println_debug_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
+			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << std::endl;
+		}
+	};
+
+	template <printable... Args>
+	println_debug_loc(Args&&... args) -> println_debug_loc<Args...>;
+
+	void println_debug(printable auto&&... args) { (std::cout << ... << args) << std::endl; }
+
 
 	template <printable... Args>
 	struct println_warn_loc {
