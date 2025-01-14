@@ -1,5 +1,7 @@
 #include "common_exception.h"
 
+#include "common_output.h"
+
 auto main() -> int {
 	try {
 		throw common::Exception("hi ", "test");
