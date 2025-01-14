@@ -7,5 +7,6 @@ auto main() -> int {
 		common::println(e.what());
 		return 0;
 	}
+
 	return 1;
 }
