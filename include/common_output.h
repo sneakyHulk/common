@@ -18,7 +18,7 @@ namespace common {
 	[[maybe_unused]] std::string stringprint(T&&... args) {
 #endif
 		std::ostringstream ss;
-		(ss << ... << args);
+		(ss << ... << std::forward<decltype(args)>(args));
 		return ss.str();
 	}
 
@@ -74,18 +74,22 @@ namespace common {
 
 #ifdef __cpp_concepts
 	template <printable... Args>
-		struct print_debug_loc {
-		explicit print_debug_loc(Args&&... args, std::source_location const location = std::source_location::current()) { ((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << std::flush; }
+	struct print_debug_loc {
+		explicit print_debug_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
+			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<decltype(args)>(args)) << std::flush;
+		}
 	};
 
 	template <printable... Args>
 	print_debug_loc(Args&&... args) -> print_debug_loc<Args...>;
 
-	void print_debug(printable auto&&... args) { (std::cout << ... << args) << std::flush; }
+	void print_debug(printable auto&&... args) { (std::cout << ... << std::forward<decltype(args)>(args)) << std::flush; }
 
 	template <printable... Args>
 	struct print_loc {
-		explicit print_loc(Args&&... args, std::source_location const location = std::source_location::current()) { ((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << args) << std::flush; }
+		explicit print_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
+			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<decltype(args)>(args)) << std::flush;
+		}
 	};
 
 	template <printable... Args>
@@ -96,7 +100,7 @@ namespace common {
 	template <typename... T>
 	[[maybe_unused]] void print(T&&... args) {
 #endif
-		(std::cout << ... << args) << std::flush;
+		(std::cout << ... << std::forward<decltype(args)>(args)) << std::flush;
 	}
 
 #ifdef __cpp_concepts
@@ -142,14 +146,6 @@ namespace common {
 		std::cout << e;
 	}
 #endif
-	enum class LOGLEVEL {
-		DEBUG,
-		INFO,
-		WARNING,
-		ERROR,
-		CRITICAL,
-	};
-
 #define BLK "\033[0;30m"
 #define RED "\033[0;31m"
 #define GRN "\033e[0;32m"
@@ -181,8 +177,7 @@ namespace common {
 	template <printable... Args>
 	println_debug_loc(Args&&... args) -> println_debug_loc<Args...>;
 
-	void println_debug(printable auto&&... args) { (std::cout << ... << args) << std::endl; }
-
+	void println_debug(printable auto&&... args) { (std::cout << ... << std::forward<decltype(args)>(args)) << std::endl; }
 
 	template <printable... Args>
 	struct println_warn_loc {
@@ -194,7 +189,7 @@ namespace common {
 	template <printable... Args>
 	println_warn_loc(Args&&... args) -> println_warn_loc<Args...>;
 
-	void println_warn(printable auto&&... args) { ((std::cout << YEL) << ... << args) << RESET << std::endl; }
+	void println_warn(printable auto&&... args) { ((std::cout << YEL) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl; }
 
 	template <printable... Args>
 	struct println_error_loc {
@@ -220,7 +215,7 @@ namespace common {
 	println_critical_loc(Args&&... args) -> println_critical_loc<Args...>;
 
 	void println_critical(printable auto&&... args) {
-		((std::cout << RED) << ... << args) << RESET << std::endl;
+		((std::cout << RED) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl;
 		throw Exception(std::forward<decltype(args)>(args)...);
 	}
 
@@ -229,7 +224,7 @@ namespace common {
 	template <typename... T>
 	[[maybe_unused]] void println(T&&... args) {
 #endif
-		(std::cout << ... << args) << std::endl;
+		(std::cout << ... << std::forward<decltype(args)>(args)) << std::endl;
 	}
 
 #ifdef __cpp_concepts

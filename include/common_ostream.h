@@ -28,8 +28,8 @@ template <typename T, std::size_t SIZE>
 	return stream;
 }
 template <typename T, std::size_t SIZE>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::array<T, SIZE> const&& arr) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(arr)>(arr));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::array<T, SIZE>&& arr) {
+	return operator<<(stream, arr);
 }
 
 // make std::set printable
@@ -51,8 +51,8 @@ template <typename T>
 	return stream;
 }
 template <typename T>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::set<T> const&& set) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(set)>(set));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::set<T>&& set) {
+	return operator<<(stream, set);
 }
 
 // make std::tuple printable
@@ -70,8 +70,8 @@ template <typename... T>
 	return stream;
 }
 template <typename... T>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::tuple<T...> const&& tup) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(tup)>(tup));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::tuple<T...>&& tup) {
+	return operator<<(stream, tup);
 }
 
 // make std::pair printable
@@ -85,7 +85,7 @@ template <typename T1, typename T2>
 }
 template <typename T1, typename T2>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::pair<T1, T2> const&& pair) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(pair)>(pair));
+		return operator<<(stream, pair);
 }
 
 // make std::vector printable
@@ -107,8 +107,8 @@ template <typename T, typename Alloc>
 	return stream;
 }
 template <typename T, typename Alloc>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::vector<T, Alloc> const&& vec) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(vec)>(vec));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::vector<T, Alloc>&& vec) {
+		return operator<<(stream, vec);
 }
 
 // make std::list printable
@@ -130,8 +130,8 @@ template <typename T, typename Alloc>
 	return stream;
 }
 template <typename T, typename Alloc>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::list<T, Alloc> const&& vec) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(vec)>(vec));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::list<T, Alloc>&& list) {
+		return operator<<(stream, list);
 }
 
 // make std::map printable
@@ -153,8 +153,8 @@ template <typename Key, typename T, typename Comp, typename Alloc>
 	return stream;
 }
 template <typename Key, typename T, typename Comp, typename Alloc>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::map<Key, T, Comp, Alloc> const&& vec) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(vec)>(vec));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::map<Key, T, Comp, Alloc>&& map) {
+		return operator<<(stream, map);
 }
 
 // make std::unordered_map printable
@@ -176,8 +176,8 @@ template <typename Key, typename T, typename Hash, typename KeyEqual, typename A
 	return stream;
 }
 template <typename Key, typename T, typename Hash, typename KeyEqual, typename Alloc>
-[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::unordered_map<Key, T, Hash, KeyEqual, Alloc> const&& vec) {
-	return operator<<(std::forward<decltype(stream)>(stream), std::forward<decltype(vec)>(vec));
+[[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::unordered_map<Key, T, Hash, KeyEqual, Alloc>&& map) {
+		return operator<<(stream, map);
 }
 
 #ifdef __cpp_concepts
