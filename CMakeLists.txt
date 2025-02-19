@@ -21,6 +21,9 @@ target_link_libraries(${PROJECT_NAME}_math_test PRIVATE ${PROJECT_NAME})
 add_executable(${PROJECT_NAME}_exception_test test/${PROJECT_NAME}_exception_test.cpp)
 target_link_libraries(${PROJECT_NAME}_exception_test PRIVATE ${PROJECT_NAME})
 
+add_executable(${PROJECT_NAME}_istream_test test/${PROJECT_NAME}_istream_test.cpp)
+target_link_libraries(${PROJECT_NAME}_istream_test PRIVATE ${PROJECT_NAME})
+
 enable_testing()
 
 add_test(NAME ${PROJECT_NAME}_test COMMAND $<TARGET_FILE:${PROJECT_NAME}_test> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
@@ -28,3 +31,4 @@ add_test(NAME ${PROJECT_NAME}_literals_test COMMAND $<TARGET_FILE:${PROJECT_NAME
 add_test(NAME ${PROJECT_NAME}_output_test COMMAND $<TARGET_FILE:${PROJECT_NAME}_output_test> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 add_test(NAME ${PROJECT_NAME}_math_test COMMAND $<TARGET_FILE:${PROJECT_NAME}_math_test> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 add_test(NAME ${PROJECT_NAME}_exception_test COMMAND $<TARGET_FILE:${PROJECT_NAME}_exception_test> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME ${PROJECT_NAME}_istream_test COMMAND $<TARGET_FILE:${PROJECT_NAME}_istream_test> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

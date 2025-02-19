@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdint>
 
 [[maybe_unused]] inline constexpr char operator""_ch(unsigned long long int num) { return num; }

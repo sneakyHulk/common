@@ -1,14 +1,17 @@
 #include "common_exception.h"
 
-#include "common_output.h"
+#include <cstring>
+#include <iostream>
 
 auto main() -> int {
 	try {
 		throw common::Exception("hi ", "test");
 	} catch (common::Exception const& e) {
-		common::println(e.what());
-		return 0;
+		std::cout << e.what();
+		if (std::strcmp(e.what(), "hi test") == 0) {
+			return EXIT_SUCCESS;
+		}
 	}
 
-	return 1;
+	return EXIT_FAILURE;
 }

@@ -17,7 +17,7 @@ namespace common {
 		explicit Exception(Args &&...args) {
 #endif
 		    std::ostringstream ss;
-		(ss << ... << args) << std::endl;
+		(ss << ... << args) << std::flush;
 
 		_exception = ss.str();
 	} [[nodiscard]] char const *what() const noexcept final {
