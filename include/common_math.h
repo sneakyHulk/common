@@ -3,6 +3,7 @@
 #include <cinttypes>
 #include <cmath>
 #include <concepts>
+#include <cstdint>
 
 namespace common {
 	[[maybe_unused]] constexpr bool is_prime(std::unsigned_integral auto const n) {
@@ -15,6 +16,15 @@ namespace common {
 		}
 
 		return true;
+	}
+
+	[[maybe_unused]] constexpr std::uint_fast8_t number_of_digits_10(std::integral auto n) {
+		std::uint_fast8_t len = 0;
+		do {
+			++len;
+		} while (n /= 10);
+
+		return len;
 	}
 
 	[[maybe_unused]] constexpr auto integer_power(std::integral auto const a, std::unsigned_integral auto b) {
