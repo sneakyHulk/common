@@ -5,6 +5,8 @@
 #include <concepts>
 #include <cstdint>
 
+#include "common.h"
+
 namespace common {
 	[[maybe_unused]] constexpr bool is_prime(std::unsigned_integral auto const n) {
 		if (n == 2U || n == 3U) return true;
