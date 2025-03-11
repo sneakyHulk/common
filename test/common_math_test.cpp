@@ -37,5 +37,8 @@ auto main() -> int {
 	if (common::nCr(7U, 4U) != 35) return EXIT_FAILURE;
 	if (common::nCr(common::as_unsigned(7), common::as_unsigned(3)) != 35) return EXIT_FAILURE;
 
+	if(common::number_of_digits_10<int>(0) != 1) return EXIT_FAILURE;
+	if(common::number_of_digits_10<int>(89090) != 5) return EXIT_FAILURE;
+
 	return EXIT_SUCCESS;
 }
