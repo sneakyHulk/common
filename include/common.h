@@ -72,7 +72,7 @@ namespace common {
 	    : public std::priority_queue<std::pair<Key, Value>, std::vector<std::pair<Key, Value>>, decltype([](std::pair<Key, Value> const &a, std::pair<Key, Value> const &b) { return a.first < b.first; })> {};
 #endif
 
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L && !defined(__APPLE__)
 	inline std::tuple<std::chrono::year_month_day, std::chrono::hh_mm_ss<decltype(std::chrono::seconds())>> get_year_month_day_hh_mm_ss(std::chrono::system_clock::time_point const &t = std::chrono::system_clock::now()) {
 		auto const created = std::chrono::zoned_time{std::chrono::current_zone(), t}.get_local_time();
 		auto const day = std::chrono::floor<std::chrono::days>(created);
