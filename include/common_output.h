@@ -192,6 +192,18 @@ namespace common {
 	void println_warn(printable auto&&... args) { ((std::cout << YEL) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl; }
 
 	template <printable... Args>
+	struct print_warn_loc {
+		explicit print_warn_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
+			((std::cout << YEL << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET;
+		}
+	};
+
+	template <printable... Args>
+	print_warn_loc(Args&&... args) -> print_warn_loc<Args...>;
+
+	void print_warn(printable auto&&... args) { ((std::cout << YEL) << ... << std::forward<decltype(args)>(args)) << RESET; }
+
+	template <printable... Args>
 	struct println_error_loc {
 		explicit println_error_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
 			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
