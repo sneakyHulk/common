@@ -85,7 +85,7 @@ template <typename T1, typename T2>
 }
 template <typename T1, typename T2>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::pair<T1, T2> const&& pair) {
-		return operator<<(stream, pair);
+	return operator<<(stream, pair);
 }
 
 // make std::vector printable
@@ -108,7 +108,7 @@ template <typename T, typename Alloc>
 }
 template <typename T, typename Alloc>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::vector<T, Alloc>&& vec) {
-		return operator<<(stream, vec);
+	return operator<<(stream, vec);
 }
 
 // make std::list printable
@@ -131,7 +131,7 @@ template <typename T, typename Alloc>
 }
 template <typename T, typename Alloc>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::list<T, Alloc>&& list) {
-		return operator<<(stream, list);
+	return operator<<(stream, list);
 }
 
 // make std::map printable
@@ -154,7 +154,7 @@ template <typename Key, typename T, typename Comp, typename Alloc>
 }
 template <typename Key, typename T, typename Comp, typename Alloc>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::map<Key, T, Comp, Alloc>&& map) {
-		return operator<<(stream, map);
+	return operator<<(stream, map);
 }
 
 // make std::unordered_map printable
@@ -177,7 +177,7 @@ template <typename Key, typename T, typename Hash, typename KeyEqual, typename A
 }
 template <typename Key, typename T, typename Hash, typename KeyEqual, typename Alloc>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::unordered_map<Key, T, Hash, KeyEqual, Alloc>&& map) {
-		return operator<<(stream, map);
+	return operator<<(stream, map);
 }
 
 #ifdef __cpp_concepts

@@ -29,11 +29,11 @@ namespace common {
 		std::ostringstream ss;
 
 		if constexpr (sizeof...(args)) {
-			auto println_recursive = [&delim, &ss](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+			auto println_recursive = [&delim, &ss]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
 				ss << first;
 				if constexpr (sizeof...(args)) {
 					ss << delim;
-					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
 
@@ -55,11 +55,11 @@ namespace common {
 		ss << s;
 
 		if constexpr (sizeof...(args)) {
-			auto println_recursive = [&d, &ss](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+			auto println_recursive = [&d, &ss]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
 				ss << first;
 				if constexpr (sizeof...(args)) {
 					ss << d;
-					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
 
@@ -109,11 +109,11 @@ namespace common {
 		constexpr auto delim = delimiter.value;
 
 		if constexpr (sizeof...(args)) {
-			auto println_recursive = [&delim](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+			auto println_recursive = [&delim]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
 				std::cout << first;
 				if constexpr (sizeof...(args)) {
 					std::cout << delim;
-					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
 
@@ -132,11 +132,11 @@ namespace common {
 		std::cout << s;
 
 		if constexpr (sizeof...(args)) {
-			auto println_recursive = [&d](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+			auto println_recursive = [&d]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
 				std::cout << first;
 				if constexpr (sizeof...(args)) {
 					std::cout << d;
-					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
 
@@ -233,11 +233,11 @@ namespace common {
 		constexpr auto delim = delimiter.value;
 
 		if constexpr (sizeof...(args)) {
-			auto println_recursive = [&delim](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+			auto println_recursive = [&delim]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
 				std::cout << first;
 				if constexpr (sizeof...(args)) {
 					std::cout << delim;
-					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
 
@@ -258,11 +258,11 @@ namespace common {
 		std::cout << s;
 
 		if constexpr (sizeof...(args)) {
-			auto println_recursive = [&d](auto& println_ref, printable auto&& first, printable auto&&... args) -> void {
+			auto println_recursive = [&d]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
 				std::cout << first;
 				if constexpr (sizeof...(args)) {
 					std::cout << d;
-					println_ref(println_ref, std::forward<decltype(args)>(args)...);
+					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
 
