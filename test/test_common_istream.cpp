@@ -1,7 +1,7 @@
-#include "common_istream.h"
-
 #include <iostream>
 #include <sstream>
+
+#include "common_istream.h"
 
 auto main() -> int {
 	std::istringstream is{R"(-7.16553,45.6726,-35.1623

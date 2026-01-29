@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.22)
 project(common)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -10,8 +10,13 @@ add_library(${PROJECT_NAME}
         src/common_istream.cpp
         src/common_output.cpp
         src/common_exception.cpp
-        src/common_math.cpp)
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+        src/common_math.cpp
+        src/common_linspace.cpp
+        src/common_error.cpp
+        src/common_ring_buffer.cpp
+        src/common_time.cpp
+)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 add_executable(test_${PROJECT_NAME} test/test_${PROJECT_NAME}.cpp)
 target_link_libraries(test_${PROJECT_NAME} PUBLIC ${PROJECT_NAME})
@@ -31,11 +36,27 @@ target_link_libraries(test_${PROJECT_NAME}_exception PUBLIC ${PROJECT_NAME})
 add_executable(test_${PROJECT_NAME}_istream test/test_${PROJECT_NAME}_istream.cpp)
 target_link_libraries(test_${PROJECT_NAME}_istream PUBLIC ${PROJECT_NAME})
 
+add_executable(test_${PROJECT_NAME}_linspace test/test_${PROJECT_NAME}_linspace.cpp)
+target_link_libraries(test_${PROJECT_NAME}_linspace PUBLIC ${PROJECT_NAME})
+
+add_executable(test_${PROJECT_NAME}_error test/test_${PROJECT_NAME}_error.cpp)
+target_link_libraries(test_${PROJECT_NAME}_error PUBLIC ${PROJECT_NAME})
+
+add_executable(test_${PROJECT_NAME}_ring_buffer test/test_${PROJECT_NAME}_ring_buffer.cpp)
+target_link_libraries(test_${PROJECT_NAME}_ring_buffer PUBLIC ${PROJECT_NAME})
+
+add_executable(test_${PROJECT_NAME}_time test/test_${PROJECT_NAME}_time.cpp)
+target_link_libraries(test_${PROJECT_NAME}_time PUBLIC ${PROJECT_NAME})
+
 enable_testing()
 
-add_test(NAME ${PROJECT_NAME}_test COMMAND $<TARGET_FILE:test_${PROJECT_NAME}> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-add_test(NAME ${PROJECT_NAME}_literals_test COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_literals> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-add_test(NAME ${PROJECT_NAME}_output_test COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_output> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-add_test(NAME ${PROJECT_NAME}_math_test COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_math> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-add_test(NAME ${PROJECT_NAME}_exception_test COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_exception> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-add_test(NAME ${PROJECT_NAME}_istream_test COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_istream> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME} COMMAND $<TARGET_FILE:test_${PROJECT_NAME}> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_literals COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_literals> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_output COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_output> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_math COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_math> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_exception COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_exception> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_istream COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_istream> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_linspace COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_linspace> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_error COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_error> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_ring_buffer COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_ring_buffer> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME test_${PROJECT_NAME}_time COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_time> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

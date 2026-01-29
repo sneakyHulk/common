@@ -1,7 +1,7 @@
-#include "common_exception.h"
-
 #include <cstring>
 #include <iostream>
+
+#include "common_exception.h"
 
 auto main() -> int {
 	try {

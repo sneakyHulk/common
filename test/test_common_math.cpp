@@ -45,5 +45,10 @@ auto main() -> int {
 	if (common::number_of_digits_10<int>(0) != 1) return EXIT_FAILURE;
 	if (common::number_of_digits_10<int>(89090) != 5) return EXIT_FAILURE;
 
+	if (std::array const data{1, 3, 5, 7, 9}; common::median(data) != 5) return EXIT_FAILURE;
+	if (std::array const data{1, 3, 5, 7}; common::median(data) != 4) return EXIT_FAILURE;
+	if (std::array const data{1., 3., 5., 7.}; common::median(data) != 4.0) return EXIT_FAILURE;
+	if (std::array const data{1., 3., 5., 7.}; common::median(data, std::greater<>{}, [](double const& a, double const& b) { return a; }) != 3.0) return EXIT_FAILURE;
+
 	return EXIT_SUCCESS;
 }

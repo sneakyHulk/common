@@ -12,7 +12,7 @@
 // make std::array printable
 template <typename T, std::size_t SIZE>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::array<T, SIZE> const& arr) {
-	stream << '(';
+	stream << '[';
 
 #if __cplusplus < 202002L
 	char space[]{0, 0, 0};
@@ -23,7 +23,7 @@ template <typename T, std::size_t SIZE>
 		stream << space << e, *space = ',', *(space + 1) = ' ';
 	}
 
-	stream << ')';
+	stream << ']';
 
 	return stream;
 }
@@ -60,7 +60,7 @@ template <typename... T>
 [[maybe_unused]] std::ostream& operator<<(std::ostream& stream, std::tuple<T...> const& tup) {
 	static auto print_tuple = []<std::size_t... I>(std::ostream& stream, std::tuple<T...> const& tup, std::index_sequence<I...>) {
 		char space[]{0, 0, 0};
-		(... << (stream << space << std::get<I>(tup), *space = ',', *(space + 1) = ' '));
+		((stream << space << std::get<I>(tup), space[0] = ',', space[1] = ' '), ...);
 	};
 
 	stream << '(';
