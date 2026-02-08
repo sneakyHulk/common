@@ -94,8 +94,13 @@ namespace common {
 #endif
 	}
 
-	template <std::size_t... Is>
-	constexpr std::array<int, sizeof...(Is)> make_filled_array(int value, std::index_sequence<Is...>) {
+	template <std::size_t N, typename T, std::size_t... Is>
+	constexpr std::array<T, N> filled_array_impl(T value, std::index_sequence<Is...>) {
 		return {((void)Is, value)...};
+	}
+
+	template <std::size_t N, typename T>
+	constexpr std::array<T, N> filled_array(T value) {
+		return filled_array_impl<N>(value, std::make_index_sequence<N>{});
 	}
 }  // namespace common
