@@ -93,4 +93,9 @@ namespace common {
 		return {ymd, hms};
 #endif
 	}
+
+	template <std::size_t... Is>
+	constexpr std::array<int, sizeof...(Is)> make_filled_array(int value, std::index_sequence<Is...>) {
+		return {((void)Is, value)...};
+	}
 }  // namespace common
