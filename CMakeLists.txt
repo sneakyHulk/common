@@ -3,6 +3,13 @@ project(common)
 
 set(CMAKE_CXX_STANDARD 23)
 
+find_package(nlohmann_json)
+find_package(Eigen3)
+
+if (nlohmann_json_FOUND AND Eigen3_FOUND)
+    add_subdirectory(utils)
+endif ()
+
 add_library(${PROJECT_NAME}
         src/common.cpp
         src/common_literals.cpp

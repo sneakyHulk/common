@@ -169,4 +169,18 @@ namespace common {
 			return (sorted[sorted.size() - 1] + sorted[sorted.size() - 2]) / T(2);
 		}
 	}
+
+	inline double angle_between_direction_vectors(double const x0, double const y0, double const z0, double const x1, double const y1, double const z1) {
+		double const dot = x0 * x1 + y0 * y1 + z0 * z1;
+		double const norm0 = std::sqrt(x0 * x0 + y0 * y0 + z0 * z0);
+		double const norm1 = std::sqrt(x1 * x1 + y1 * y1 + z1 * z1);
+
+		double cos_theta = dot / (norm0 * norm1);
+
+		// clamp for numerical safety
+		if (cos_theta > 1.0) cos_theta = 1.0;
+		if (cos_theta < -1.0) cos_theta = -1.0;
+
+		return std::acos(cos_theta);  // in radians
+	}
 }  // namespace common
