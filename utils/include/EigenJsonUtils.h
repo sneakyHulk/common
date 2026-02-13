@@ -37,15 +37,15 @@ namespace Eigen {
 		}
 	}
 
-	template <typename scalar, int args>
-	void from_json(nlohmann::json const& j, Vector<scalar, args>& vector) {
-		assert(j.size() == vector.size());
-		for (std::size_t i = 0; i < j.size(); ++i) {
-			const auto& value = j.at(i);
-			if (value.is_null())
-				vector(i) = std::numeric_limits<double>::quiet_NaN();
-			else
-				vector(i) = value.get<scalar>();
-		}
-	}
+	// template <typename scalar, int args>
+	// void from_json(nlohmann::json const& j, Vector<scalar, args>& vector) {
+	// 	assert(j.size() == vector.size());
+	// 	for (std::size_t i = 0; i < j.size(); ++i) {
+	// 		const auto& value = j.at(i);
+	// 		if (value.is_null())
+	// 			vector(i) = std::numeric_limits<double>::quiet_NaN();
+	// 		else
+	// 			vector(i) = value.get<scalar>();
+	// 	}
+	// }
 }  // namespace Eigen
