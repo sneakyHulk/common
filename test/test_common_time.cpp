@@ -25,5 +25,8 @@ auto main() -> int {
 
 	if (auto const diff = restored.time_since_epoch() - now.time_since_epoch(); diff != std::chrono::system_clock::duration::zero()) return EXIT_FAILURE;
 
+	std::cout << common::to_string(now) << std::endl;
+	std::cout << common::to_string(now2) << std::endl;
+
 	return EXIT_SUCCESS;
 }

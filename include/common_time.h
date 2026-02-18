@@ -2,6 +2,10 @@
 
 #include <chrono>
 #include <cstdint>
+#include <filesystem>
+
+#include "common.h"
+#include "common_output.h"
 
 namespace common {
 	template <typename Clock = std::chrono::system_clock>
@@ -22,4 +26,11 @@ namespace common {
 		return now;
 	}
 
+	template <typename Clock = std::chrono::system_clock>
+	std::string to_string(std::chrono::time_point<Clock> const& tp) {
+		auto [ymd, hms] = common::get_year_month_day_hh_mm_ss(tp);
+
+		return common::stringprint(static_cast<int>(ymd.year()), "-", std::setw(2), std::setfill('0'), static_cast<unsigned>(ymd.month()), "-", std::setw(2), std::setfill('0'), static_cast<unsigned>(ymd.day()), "_", std::setw(2),
+		    std::setfill('0'), hms.hours().count(), "-", std::setw(2), std::setfill('0'), hms.minutes().count(), "-", std::setw(2), std::setfill('0'), hms.seconds().count(), "_", std::setw(10), std::setfill('0'), to_uint64_t(tp));
+	}
 }  // namespace common
