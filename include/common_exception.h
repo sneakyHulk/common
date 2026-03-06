@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common_ostream.h>
+#include "common_ostream.h"
 
 #include <sstream>
 #include <stdexcept>

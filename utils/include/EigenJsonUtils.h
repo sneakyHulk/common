@@ -1,13 +1,7 @@
 #pragma once
 
-#include <__ranges/transform_view.h>
-
 #include <Eigen/Eigen>
-#include <filesystem>
-#include <iosfwd>
 #include <nlohmann/json.hpp>
-#include <ranges>
-#include <vector>
 
 namespace Eigen {
 	template <typename scalar, int... args>

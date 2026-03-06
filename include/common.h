@@ -9,6 +9,10 @@
 #include <type_traits>
 #include <vector>
 
+#ifdef __cpp_concepts
+#include <concepts>
+#endif
+
 namespace common {
 	// concept to check whether range-based for loop can be used.
 #ifdef __cpp_concepts

@@ -1,13 +1,17 @@
 #pragma once
 
-#include <common.h>
-#include <common_exception.h>
-#include <common_ostream.h>
-
 #include <filesystem>
 #include <iostream>
 #include <source_location>
 #include <sstream>
+
+#include "common.h"
+#include "common_exception.h"
+#include "common_ostream.h"
+
+#ifdef __cpp_concepts
+#include <concepts>
+#endif
 
 namespace common {
 

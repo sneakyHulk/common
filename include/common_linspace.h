@@ -1,7 +1,10 @@
 #pragma once
 #include <array>
 #include <cstdint>
+
+#if defined(__cpp_lib_ranges_enumerate)
 #include <ranges>
+#endif
 
 namespace common {
 	template <std::size_t N>

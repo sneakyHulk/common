@@ -1,13 +1,14 @@
 #pragma once
 
-#include <cinttypes>
 #include <cmath>
-#include <concepts>
 #include <cstdint>
-#include <iostream>
 #include <type_traits>
 
 #include "common.h"
+
+#ifdef __cpp_concepts
+#include <concepts>
+#endif
 
 namespace common {
 #ifdef __cpp_concepts
