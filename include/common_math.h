@@ -202,4 +202,13 @@ namespace common {
 
 		return result;
 	}
+
+	constexpr auto squared_distance(std::ranges::sized_range auto const& a, std::ranges::sized_range auto const& b) {
+		using T = std::ranges::range_value_t<decltype(a)>;
+
+		return std::transform_reduce(std::ranges::begin(a), std::ranges::end(a), std::ranges::begin(b), T{}, std::plus<>(), [](auto x, auto y) {
+			auto d = x - y;
+			return d * d;
+		});
+	}
 }  // namespace common

@@ -56,5 +56,7 @@ auto main() -> int {
 
 	common::println(common::permutations<2>());
 
+	if (std::array a{1, 2, 3}, b{1, 0, 4}; common::squared_distance(a, b) != 5) return EXIT_FAILURE;
+
 	return EXIT_SUCCESS;
 }
