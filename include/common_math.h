@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <numeric>
 #include <type_traits>
 
 #include "common.h"
@@ -185,5 +186,20 @@ namespace common {
 		return std::acos(cos_theta);  // in radians
 	}
 
-	inline constexpr std::uint64_t factorial(std::unsigned_integral auto n) { return n <= 1 ? 1 : n * factorial(n - 1); }
+	constexpr std::uint64_t factorial(std::unsigned_integral auto n) { return n <= 1 ? 1 : n * factorial(n - 1); }
+
+	template <std::size_t M>
+	constexpr std::array<std::array<std::size_t, M>, common::factorial(M)> permutations() {
+		std::array<std::size_t, M> tmp;
+		std::iota(tmp.begin(), tmp.end(), std::size_t{0});
+
+		std::array<std::array<std::size_t, M>, common::factorial(M)> result;
+
+		std::size_t idx = 0;
+		do {
+			result[idx++] = tmp;
+		} while (std::next_permutation(tmp.begin(), tmp.end()));
+
+		return result;
+	}
 }  // namespace common

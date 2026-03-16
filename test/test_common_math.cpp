@@ -54,5 +54,7 @@ auto main() -> int {
 	if (common::factorial(4U) != 24) return EXIT_FAILURE;
 	if (common::factorial(5U) != 120) return EXIT_FAILURE;
 
+	common::println(common::permutations<2>());
+
 	return EXIT_SUCCESS;
 }
