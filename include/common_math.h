@@ -184,4 +184,6 @@ namespace common {
 
 		return std::acos(cos_theta);  // in radians
 	}
+
+	inline constexpr std::uint64_t factorial(std::unsigned_integral auto n) { return n <= 1 ? 1 : n * factorial(n - 1); }
 }  // namespace common
