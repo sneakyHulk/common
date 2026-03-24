@@ -34,4 +34,22 @@ namespace common {
 			return is;
 		}
 	};
+
+	template <char... Delims>
+	struct custom_delimiter : std::ctype<char> {
+		custom_delimiter() : std::ctype<char>(get_table()) {}
+
+		static mask const* get_table() {
+			static mask rc[table_size];
+			for (char const delim : {Delims...}) {
+				rc[delim] = std::ctype_base::space;
+			}
+			return &rc[0];
+		}
+	};
+
+	template <char... Delims, typename Stream>
+	void imbue_delimiters(Stream& in) {
+		in.imbue(std::locale(in.getloc(), new custom_delimiter<Delims...>));
+	}
 }  // namespace common
