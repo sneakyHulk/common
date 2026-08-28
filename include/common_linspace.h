@@ -9,7 +9,7 @@
 
 namespace common {
 	template <std::floating_point T, std::size_t N>
-	std::array<T, N> linspace(T from, T to) {
+	constexpr std::array<T, N> linspace(T from, T to) {
 		std::array<T, N> result;
 
 #if defined(__cpp_lib_ranges_enumerate)
@@ -26,7 +26,7 @@ namespace common {
 	}
 
 	template <std::floating_point T>
-	void linspace(T const from, T const to, std::size_t const N, std::span<T> result) {
+	constexpr void linspace(T const from, T const to, std::size_t const N, std::span<T> result) {
 #if defined(__cpp_lib_ranges_enumerate)
 		for (double const step = (to - from) / (N - 1); auto const& [i, e] : std::ranges::views::enumerate(result)) {
 #else
@@ -39,7 +39,7 @@ namespace common {
 	}
 
 	template <std::floating_point T, std::size_t N>
-	std::array<T, N> linspace_exclusive(T from, T to) {
+	constexpr std::array<T, N> linspace_exclusive(T from, T to) {
 		std::array<T, N> result;
 
 #if defined(__cpp_lib_ranges_enumerate)
