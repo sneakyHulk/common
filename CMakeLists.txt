@@ -11,8 +11,8 @@ if (nlohmann_json_FOUND AND Eigen3_FOUND)
             src/EigenJsonUtils.cpp
     )
     target_include_directories(eigen_utils PUBLIC include)
-    target_link_libraries(eigen_utils PRIVATE nlohmann_json::nlohmann_json)
-    target_link_libraries(eigen_utils PRIVATE Eigen3::Eigen)
+    target_link_libraries(eigen_utils PUBLIC nlohmann_json::nlohmann_json)
+    target_link_libraries(eigen_utils PUBLIC Eigen3::Eigen)
 endif ()
 
 add_library(${PROJECT_NAME}
