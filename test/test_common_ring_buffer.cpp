@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "common_ring_buffer.h"
 
 auto main() -> int {
