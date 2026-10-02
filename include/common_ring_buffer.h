@@ -1,78 +1,74 @@
 #pragma once
 
-#include <common_output.h>
-
+#include <algorithm>
 #include <array>
-#include <cstdint>
+#include <cassert>
+#include <cstddef>
 #include <span>
 
 namespace common {
+	// Fixed size FIFO without heap. push_back() overwrites the oldest element when full.
+	// Zero copy input (DMA, boost::asio read_some): write into writable(), then commit() the number of written elements.
 	template <typename T, std::size_t N>
-	class ring_buffer : protected std::array<T, N> {
+	class ring_buffer {
+		std::array<T, N> data{};
+		std::size_t head = 0;  // physical index of the oldest element
+		std::size_t count = 0;
+
+		[[nodiscard]] static constexpr std::size_t wrap(std::size_t const i) { return i % N; }
+		[[nodiscard]] constexpr std::size_t tail() const { return wrap(head + count); }  // physical index of the next write
+
 	   public:
-		template <std::size_t max_sub_array_size = N>
-		constexpr std::span<std::uint8_t> linear_sub_array() requires(max_sub_array_size <= N) {
-			return {std::array<T, N>::begin() + index, std::array<T, N>::begin() + std::min(index + max_sub_array_size, N)};
+		[[nodiscard]] static constexpr std::size_t capacity() { return N; }
+		[[nodiscard]] constexpr std::size_t size() const { return count; }
+		[[nodiscard]] constexpr bool empty() const { return count == 0; }
+		[[nodiscard]] constexpr bool full() const { return count == N; }
+
+		// n = 0 is the oldest element
+		[[nodiscard]] constexpr T &operator[](std::size_t const n) {
+			assert(n < count);
+			return data[wrap(head + n)];
 		}
-		constexpr std::span<std::uint8_t> linear_sub_array() { return {std::array<T, N>::begin() + index, std::array<T, N>::end()}; }
-		constexpr void rotate(std::size_t const n) {
-			index = (index + n) % N;
-			if (n > pops)
-				pops = 0;
+		[[nodiscard]] constexpr T const &operator[](std::size_t const n) const {
+			assert(n < count);
+			return data[wrap(head + n)];
+		}
+
+		[[nodiscard]] constexpr T &front() { return operator[](0); }
+		[[nodiscard]] constexpr T const &front() const { return operator[](0); }
+		[[nodiscard]] constexpr T &back() { return operator[](count - 1); }
+		[[nodiscard]] constexpr T const &back() const { return operator[](count - 1); }
+
+		constexpr void push_back(T const &value) {
+			data[tail()] = value;
+			if (full())
+				head = wrap(head + 1);
 			else
-				pops -= n;
-		}
-		constexpr void push_back(T const value) {
-			std::array<T, N>::operator[](index) = value;
-			index = (index + 1) % N;
-			if (pops) --pops;
+				++count;
 		}
 
-		[[nodiscard]] constexpr std::size_t size() const { return N - pops; }
-
-		constexpr std::array<T, N> const& array() { return *this; }
-
-		constexpr T const& back() const {
-			if (size() == 0) common::println_error_loc("size() == 0");
-			return operator[](size() - 1);
+		// removes the n oldest elements, at most size()
+		constexpr void pop(std::size_t const n = 1) {
+			auto const m = std::min(n, count);
+			head = wrap(head + m);
+			count -= m;
+			if (count == 0) head = 0;  // maximizes the next writable()
 		}
 
-		constexpr T& back() {
-			if (size() == 0) common::println_error_loc("size() == 0");
-			return operator[](size() - 1);
+		// contiguous free space at the write position, never overwrites elements, empty when full
+		// can be shorter than capacity() - size() when the free space wraps around
+		[[nodiscard]] constexpr std::span<T> writable() {
+			auto const begin = tail();
+			return {data.data() + begin, std::min(N - count, N - begin)};
 		}
 
-		constexpr T const& front() const {
-			if (size() == 0) common::println_error_loc("size() == 0");
-			return operator[](0);
+		// adds the first n elements of writable() to the buffer
+		constexpr void commit(std::size_t const n) {
+			assert(n <= writable().size());
+			count += n;
 		}
 
-		constexpr T& front() {
-			if (size() == 0) common::println_error_loc("size() == 0");
-			return operator[](0);
-		}
-
-		constexpr T const& operator[](std::size_t const n) const {
-			if (n >= size()) common::println_error_loc("n < size()");
-			return std::array<T, N>::operator[]((index + pops + n) % N);
-		}
-
-		constexpr T& operator[](std::size_t const n) {
-			if (n >= size()) common::println_error_loc("n < size()");
-			return std::array<T, N>::operator[]((index + pops + n) % N);
-		}
-
-		constexpr void pop() {
-			pops = std::min(pops + 1, N);
-			if (pops + 1 > N) common::println_error_loc("pops > N");
-		}
-		constexpr void pop(std::size_t const n) {
-			if (pops + n > N) common::println_error_loc("pops > N");
-			pops = std::min(pops + n, N);
-		}
-
-	   private:
-		std::size_t index = 0;
-		std::size_t pops = N;
+		// physical storage, not in logical order
+		[[nodiscard]] constexpr std::array<T, N> const &array() const { return data; }
 	};
 }  // namespace common
