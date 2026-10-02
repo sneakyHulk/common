@@ -26,6 +26,7 @@ add_library(${PROJECT_NAME}
         src/common_linspace.cpp
         src/common_error.cpp
         src/common_ring_buffer.cpp
+        src/common_parser.cpp
         src/common_time.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC include)
@@ -64,6 +65,9 @@ if (PROJECT_IS_TOP_LEVEL)
     add_executable(test_${PROJECT_NAME}_containers test/test_${PROJECT_NAME}_containers.cpp)
     target_link_libraries(test_${PROJECT_NAME}_containers PUBLIC ${PROJECT_NAME})
 
+    add_executable(test_${PROJECT_NAME}_parser test/test_${PROJECT_NAME}_parser.cpp)
+    target_link_libraries(test_${PROJECT_NAME}_parser PUBLIC ${PROJECT_NAME})
+
     if (TARGET eigen_utils)
         add_executable(test_eigen_utils test/test_eigen_utils.cpp)
         target_link_libraries(test_eigen_utils PUBLIC eigen_utils)
@@ -82,6 +86,7 @@ if (PROJECT_IS_TOP_LEVEL)
     add_test(NAME test_${PROJECT_NAME}_ring_buffer COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_ring_buffer> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_test(NAME test_${PROJECT_NAME}_time COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_time> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_test(NAME test_${PROJECT_NAME}_containers COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_containers> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    add_test(NAME test_${PROJECT_NAME}_parser COMMAND $<TARGET_FILE:test_${PROJECT_NAME}_parser> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
     if (TARGET eigen_utils)
         add_test(NAME test_eigen_utils COMMAND $<TARGET_FILE:test_eigen_utils> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
