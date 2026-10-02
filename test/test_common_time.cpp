@@ -28,5 +28,17 @@ auto main() -> int {
 	std::cout << common::to_string(now) << std::endl;
 	std::cout << common::to_string(now2) << std::endl;
 
+#if __cplusplus >= 202002L
+	{
+		std::chrono::system_clock::time_point t = std::chrono::system_clock::now();
+		auto [ymd1, hms1] = common::get_year_month_day_hh_mm_ss(t);
+		t += std::chrono::seconds(1) + std::chrono::days(1);
+		auto [ymd2, hms2] = common::get_year_month_day_hh_mm_ss(t);
+
+		if (ymd2.day() - ymd1.day() != std::chrono::days(1)) return EXIT_FAILURE;
+		if (hms2.seconds() - hms1.seconds() != std::chrono::seconds(1)) return EXIT_FAILURE;
+	}
+#endif
+
 	return EXIT_SUCCESS;
 }

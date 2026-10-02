@@ -1,20 +1,38 @@
 #pragma once
 
-#include <filesystem>
-#include <iostream>
+#include <cstdlib>
 #include <source_location>
-#include <sstream>
+#include <string_view>
 
 #include "common.h"
+#include "common_output_backend.h"
+
+#ifndef ARDUINO
+#include <sstream>
+
 #include "common_exception.h"
-#include "common_ostream.h"
+#endif
 
 #ifdef __cpp_concepts
 #include <concepts>
 #endif
 
 namespace common {
+	namespace detail {
+		// file name without directory and extension, like std::filesystem::path::stem()
+		constexpr std::string_view stem(std::string_view path) {
+			path = path.substr(path.find_last_of("/\\") + 1);
+			return path.substr(0, path.find_last_of('.'));
+		}
 
+		inline void write_location(std::source_location const& location) {
+			backend::write('[');
+			backend::write(stem(location.file_name()));
+			backend::write("]: ");
+		}
+	}  // namespace detail
+
+#ifndef ARDUINO  // returns std::string, host only
 #ifdef __cpp_concepts
 	[[maybe_unused]] std::string stringprint(printable auto&&... args) {
 #else
@@ -75,24 +93,32 @@ namespace common {
 		return ss.str();
 	}
 #endif
+#endif
 
 #ifdef __cpp_concepts
 	template <printable... Args>
 	struct print_debug_loc {
 		explicit print_debug_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<decltype(args)>(args)) << std::flush;
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::flush();
 		}
 	};
 
 	template <printable... Args>
 	print_debug_loc(Args&&... args) -> print_debug_loc<Args...>;
 
-	void print_debug(printable auto&&... args) { (std::cout << ... << std::forward<decltype(args)>(args)) << std::flush; }
+	void print_debug(printable auto&&... args) {
+		(backend::write(args), ...);
+		backend::flush();
+	}
 
 	template <printable... Args>
 	struct print_loc {
 		explicit print_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<decltype(args)>(args)) << std::flush;
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::flush();
 		}
 	};
 
@@ -104,7 +130,8 @@ namespace common {
 	template <typename... T>
 	[[maybe_unused]] void print(T&&... args) {
 #endif
-		(std::cout << ... << std::forward<decltype(args)>(args)) << std::flush;
+		(backend::write(args), ...);
+		backend::flush();
 	}
 
 #ifdef __cpp_concepts
@@ -114,9 +141,9 @@ namespace common {
 
 		if constexpr (sizeof...(args)) {
 			auto println_recursive = [&delim]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
-				std::cout << first;
+				backend::write(first);
 				if constexpr (sizeof...(args)) {
-					std::cout << delim;
+					backend::write(delim);
 					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
@@ -133,13 +160,13 @@ namespace common {
 		constexpr auto s = start.value;
 		constexpr auto e = end.value;
 
-		std::cout << s;
+		backend::write(s);
 
 		if constexpr (sizeof...(args)) {
 			auto println_recursive = [&d]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
-				std::cout << first;
+				backend::write(first);
 				if constexpr (sizeof...(args)) {
-					std::cout << d;
+					backend::write(d);
 					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
@@ -147,7 +174,7 @@ namespace common {
 			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
 		}
 
-		std::cout << e;
+		backend::write(e);
 	}
 #endif
 #define BLK "\033[0;30m"
@@ -164,7 +191,9 @@ namespace common {
 	template <printable... Args>
 	struct println_loc {
 		explicit println_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << std::endl;
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::newline();
 		}
 	};
 
@@ -174,44 +203,77 @@ namespace common {
 	template <printable... Args>
 	struct println_debug_loc {
 		explicit println_debug_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << std::endl;
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::newline();
 		}
 	};
 
 	template <printable... Args>
 	println_debug_loc(Args&&... args) -> println_debug_loc<Args...>;
 
-	void println_debug(printable auto&&... args) { (std::cout << ... << std::forward<decltype(args)>(args)) << std::endl; }
+	void println_debug(printable auto&&... args) {
+		(backend::write(args), ...);
+		backend::newline();
+	}
 
 	template <printable... Args>
 	struct println_warn_loc {
 		explicit println_warn_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << YEL << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
+			backend::write(YEL);
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::write(RESET);
+			backend::newline();
 		}
 	};
 
 	template <printable... Args>
 	println_warn_loc(Args&&... args) -> println_warn_loc<Args...>;
 
-	void println_warn(printable auto&&... args) { ((std::cout << YEL) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl; }
+	void println_warn(printable auto&&... args) {
+		backend::write(YEL);
+		(backend::write(args), ...);
+		backend::write(RESET);
+		backend::newline();
+	}
 
 	template <printable... Args>
 	struct println_error_loc {
 		explicit println_error_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
+			backend::write(RED);
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::write(RESET);
+			backend::newline();
 		}
 	};
 
 	template <printable... Args>
 	println_error_loc(Args&&... args) -> println_error_loc<Args...>;
 
-	void println_error(printable auto&&... args) { ((std::cout << RED) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl; }
+	void println_error(printable auto&&... args) {
+		backend::write(RED);
+		(backend::write(args), ...);
+		backend::write(RESET);
+		backend::newline();
+	}
 
+	// throws common::Exception on the host, stops the program where exceptions are not available
 	template <printable... Args>
 	struct println_critical_loc {
 		explicit println_critical_loc(Args&&... args, std::source_location const location = std::source_location::current()) {
-			((std::cout << RED << '[' << std::filesystem::path(location.file_name()).stem().string() << "]: ") << ... << std::forward<Args>(args)) << RESET << std::endl;
+			backend::write(RED);
+			detail::write_location(location);
+			(backend::write(args), ...);
+			backend::write(RESET);
+			backend::newline();
+#if !defined(ARDUINO) && defined(__cpp_exceptions)
 			throw Exception(std::forward<Args>(args)...);
+#else
+			backend::flush();
+			std::abort();
+#endif
 		}
 	};
 
@@ -219,8 +281,16 @@ namespace common {
 	println_critical_loc(Args&&... args) -> println_critical_loc<Args...>;
 
 	void println_critical(printable auto&&... args) {
-		((std::cout << RED) << ... << std::forward<decltype(args)>(args)) << RESET << std::endl;
+		backend::write(RED);
+		(backend::write(args), ...);
+		backend::write(RESET);
+		backend::newline();
+#if !defined(ARDUINO) && defined(__cpp_exceptions)
 		throw Exception(std::forward<decltype(args)>(args)...);
+#else
+		backend::flush();
+		std::abort();
+#endif
 	}
 
 	[[maybe_unused]] void println(printable auto&&... args) {
@@ -228,7 +298,8 @@ namespace common {
 	template <typename... T>
 	[[maybe_unused]] void println(T&&... args) {
 #endif
-		(std::cout << ... << std::forward<decltype(args)>(args)) << std::endl;
+		(backend::write(args), ...);
+		backend::newline();
 	}
 
 #ifdef __cpp_concepts
@@ -238,9 +309,9 @@ namespace common {
 
 		if constexpr (sizeof...(args)) {
 			auto println_recursive = [&delim]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
-				std::cout << first;
+				backend::write(first);
 				if constexpr (sizeof...(args)) {
-					std::cout << delim;
+					backend::write(delim);
 					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
@@ -248,7 +319,7 @@ namespace common {
 			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
 		}
 
-		std::cout << std::endl;
+		backend::newline();
 	}
 #endif
 
@@ -259,13 +330,13 @@ namespace common {
 		constexpr auto s = start.value;
 		constexpr auto e = end.value;
 
-		std::cout << s;
+		backend::write(s);
 
 		if constexpr (sizeof...(args)) {
 			auto println_recursive = [&d]<printable... T0>(auto& println_ref, printable auto&& first, T0&&... args) -> void {
-				std::cout << first;
+				backend::write(first);
 				if constexpr (sizeof...(args)) {
-					std::cout << d;
+					backend::write(d);
 					println_ref(println_ref, std::forward<T0>(args)...);
 				}
 			};
@@ -273,7 +344,8 @@ namespace common {
 			println_recursive(println_recursive, std::forward<decltype(args)>(args)...);
 		}
 
-		std::cout << e << std::endl;
+		backend::write(e);
+		backend::newline();
 	}
 #endif
 
@@ -282,7 +354,7 @@ namespace common {
 #endif
 }  // namespace common
 
-#ifdef __cpp_lib_format
+#if defined(__cpp_lib_format) && !defined(ARDUINO)
 #include <format>
 namespace common {
 	constexpr std::string to_bin(std::integral auto num) {
