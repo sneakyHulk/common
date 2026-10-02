@@ -490,5 +490,4 @@ int main() {
 	test_info_and_time_sync();
 	test_custom_message_and_order();
 	test_buffer_keeps_only_unparseable_tail();
-	std::cout << "all common_parser tests passed" << std::endl;
 }
