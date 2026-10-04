@@ -45,6 +45,9 @@ concept printable = requires(T const& value) { common::backend::write(value); };
 #include "common_ostream.h"  // operator<< for the std containers and the concept printable
 
 namespace common::backend {
+	// the operator<< for the std containers (common_ostream.h) are global, without this they are hidden by any common::operator<< (e.g. common_error.h)
+	using ::operator<<;
+
 	void write(printable auto const& value) { std::cout << value; }
 
 	inline void newline() { std::cout << std::endl; }
