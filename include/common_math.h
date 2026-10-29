@@ -1,9 +1,13 @@
 #pragma once
 
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <numeric>
+#include <span>
 #include <type_traits>
+#include <vector>
 
 #include "common.h"
 
@@ -145,8 +149,9 @@ namespace common {
 		return ans;
 	}
 
+	// span with a fixed size: also a part of other data without copying it, e.g. std::span<double const, 11>{v.data() + i, 11}
 	template <typename T, std::size_t N, typename Compare, typename Midpoint>
-	T median(std::array<T, N> const& data, Compare comp, Midpoint mid) {
+	requires(N != std::dynamic_extent) T median(std::span<T const, N> const data, Compare comp, Midpoint mid) {
 		std::array<T, N / 2 + 1> sorted;
 		std::partial_sort_copy(data.begin(), data.end(), sorted.begin(), sorted.end(), comp);
 
@@ -158,10 +163,10 @@ namespace common {
 	}
 
 	template <typename T, std::size_t N>
-	requires std::totally_ordered<T> && requires(T a) {
+	requires(N != std::dynamic_extent) && std::totally_ordered<T> && requires(T a) {
 		{ a + a } -> std::convertible_to<T>;
 		{ a / 2 } -> std::convertible_to<T>;
-	} T median(std::array<T, N> const& data) {
+	} T median(std::span<T const, N> const data) {
 		std::array<T, N / 2 + 1> sorted;
 		std::partial_sort_copy(data.begin(), data.end(), sorted.begin(), sorted.end());
 
@@ -170,6 +175,48 @@ namespace common {
 		} else {
 			return (sorted[sorted.size() - 1] + sorted[sorted.size() - 2]) / T(2);
 		}
+	}
+
+	// span with a size at runtime (std::dynamic_extent), not empty: the lower half is sorted into a vector
+	template <typename T, typename Compare, typename Midpoint>
+	T median(std::span<T const> const data, Compare comp, Midpoint mid) {
+		std::vector<T> sorted(data.size() / 2 + 1);
+		std::partial_sort_copy(data.begin(), data.end(), sorted.begin(), sorted.end(), comp);
+
+		if (data.size() % 2) {
+			return sorted.back();
+		} else {
+			return mid(sorted[sorted.size() - 1], sorted[sorted.size() - 2]);
+		}
+	}
+
+	template <typename T>
+	requires std::totally_ordered<T> && requires(T a) {
+		{ a + a } -> std::convertible_to<T>;
+		{ a / 2 } -> std::convertible_to<T>;
+	} T median(std::span<T const> const data) {
+		std::vector<T> sorted(data.size() / 2 + 1);
+		std::partial_sort_copy(data.begin(), data.end(), sorted.begin(), sorted.end());
+
+		if (data.size() % 2) {
+			return sorted.back();
+		} else {
+			return (sorted[sorted.size() - 1] + sorted[sorted.size() - 2]) / T(2);
+		}
+	}
+
+	// std::array: the span is not deduced from it (no conversions in template argument deduction)
+	template <typename T, std::size_t N, typename Compare, typename Midpoint>
+	T median(std::array<T, N> const& data, Compare comp, Midpoint mid) {
+		return median(std::span<T const, N>{data}, comp, mid);
+	}
+
+	template <typename T, std::size_t N>
+	requires std::totally_ordered<T> && requires(T a) {
+		{ a + a } -> std::convertible_to<T>;
+		{ a / 2 } -> std::convertible_to<T>;
+	} T median(std::array<T, N> const& data) {
+		return median(std::span<T const, N>{data});
 	}
 
 	inline double angle_between_direction_vectors(double const x0, double const y0, double const z0, double const x1, double const y1, double const z1) {
